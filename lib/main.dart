@@ -138,7 +138,19 @@ class _HomePageState extends State<HomePage> {
                   //  image: Image.file('./random-grid.jpg'),
                   //),
                   Text("s"),
-                  FutureBuilder(builder: jokeProvider.getJoke())
+                  /*FutureBuilder(
+                    initialData: "Waiting",
+                    future: await jokeProvider.getJoke(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                    }
+                    final data = snapshot.data ?? "...";
+                    return Icon(data ? Icons.add : Icons.error_outline);
+                    },
+                    
+                  )*/
+                  Text("joke")
                 ])),
         floatingActionButton: FloatingActionButton.extended(
           label: const Text('Categories'),
