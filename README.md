@@ -4,3 +4,5 @@ This application is writtent on flutter. This app show text with 2 rows and if b
 # Demo
 ![alt text](./Demo1.png)
 ![alt text](./Demo2.png)
+
+This assignment will be moved from private to public after deadline
