@@ -6,46 +6,6 @@ import 'dart:io';
 
 void main() => runApp(const MyApp());
 
-/*class OneJoke extends Padding {
-  OneJoke({required EdgeInsetsGeometry padding}) : super(padding: padding);
-  
-}*/
-
-/*
-//Main page
-Scaffold(
-      appBar: AppBar(
-        title: const Text('Jokes about Chuck Norris'),
-      ),
-      body: Padding(
-          padding: EdgeInsets.all(20.0),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              mainAxisSize: MainAxisSize.max,
-              children: const [
-                //Image(
-                //  image: Image.file('./random-grid.jpg'),
-                //),
-                Text("s"),
-                Text("Here is short joke")
-              ])),
-    )
-Seccond page
-Scaffold(
-            appBar: AppBar(title: const Text('Test')),
-            body: ListView.builder(
-              itemCount: 3,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  child: Text(categories[index]),
-                  color: Color.fromARGB(136, 89, 89, 204),
-                  alignment: Alignment.center,
-                );
-              },
-            ))
-
-*/
-
 class JokeProvider {
   List CATEGORIES = [];
   String current_category = "random";
@@ -133,9 +93,10 @@ class _HomePageState extends State<HomePage> {
   Widget getJokePage(BuildContext context) {
     final String cat = jokeProvider.current_category;
     return Scaffold(
-        body: Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Row(
+      body: Padding(
+          padding: EdgeInsets.all(20.0),
+          child: Column(children: [
+            Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.max,
                 children: [
@@ -161,32 +122,70 @@ class _HomePageState extends State<HomePage> {
                           );
                         }
                       }),
-                ])),
-        floatingActionButton: Align(
-          alignment: Alignment.bottomRight,
-          child: Column(
-            children: <Widget>[
-              FloatingActionButton.extended(
-                label: const Text('Categories'),
-                icon: const Icon(Icons.abc_outlined),
-                onPressed: changeState,
-                focusColor: const Color.fromARGB(184, 95, 97, 192),
-                backgroundColor: const Color.fromARGB(184, 60, 61, 144),
-              ),
-              FloatingActionButton.extended(
-                label: const Text('About'),
-                icon: const Icon(Icons.account_circle_sharp),
-                onPressed: () {
-                  setState(() {
-                    state = 2;
-                  });
-                },
-                focusColor: const Color.fromARGB(184, 95, 97, 192),
-                backgroundColor: const Color.fromARGB(184, 60, 61, 144),
-              )
-            ],
+                ]),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Image.asset('image2.jpg'),
+                  Text(cat),
+                  FutureBuilder(
+                      future: jokeProvider.getJoke(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
+                        if (snapshot.hasData) {
+                          return SafeArea(
+                            child: Text(snapshot.data!),
+                            left: true,
+                            right: true,
+                            bottom: true,
+                            minimum: EdgeInsets.all(10.0),
+                          );
+                        } else {
+                          return const SizedBox(
+                            width: 60,
+                            height: 60,
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      }),
+                ]),
+          ])),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButton: Column(
+        children: <Widget>[
+          FloatingActionButton.extended(
+            label: const Text('Categories'),
+            icon: const Icon(Icons.abc_outlined),
+            onPressed: changeState,
+            focusColor: const Color.fromARGB(184, 95, 97, 192),
+            backgroundColor: const Color.fromARGB(184, 60, 61, 144),
           ),
-        ));
+          FloatingActionButton.extended(
+            label: const Text('About'),
+            icon: const Icon(Icons.account_circle_sharp),
+            onPressed: () {
+              setState(() {
+                state = 2;
+              });
+            },
+            focusColor: const Color.fromARGB(184, 95, 97, 192),
+            backgroundColor: const Color.fromARGB(184, 60, 61, 144),
+          ),
+          FloatingActionButton.extended(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              setState(() {
+                state = 0;
+              });
+            },
+            focusColor: const Color.fromARGB(184, 95, 97, 192),
+            backgroundColor: const Color.fromARGB(184, 60, 61, 144),
+            label: const Text(""),
+          )
+        ],
+      ),
+    );
   }
 
   Widget getAbout() {
@@ -234,59 +233,7 @@ class _HomePageState extends State<HomePage> {
         body: getPage(context));
   }
 }
-/*class JokePage extends StatelessWidget {
-  const JokePage({Key? key}) : super(key: key);
-  
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                mainAxisSize: MainAxisSize.max,
-                children: const [
-                  //Image(
-                  //  image: Image.file('./random-grid.jpg'),
-                  //),
-                  Text("s"),
-                  Text("Here is short joke")
-                ])),
-        floatingActionButton: FloatingActionButton.extended(
-          label: const Text('Categories'),
-          icon: const Icon(Icons.abc_outlined),
-          onPressed: onPress,
-          focusColor: const Color.fromARGB(184, 95, 97, 192),
-          backgroundColor: const Color.fromARGB(184, 60, 61, 144),
-        ));
-  }
-}*/
 
-/*class CategoryPage extends StatelessWidget {
-  const CategoryPage({Key? key}) : super(key: key);
-
-  List<String> __generate_cat_names() {
-    const categories = <String>['cat1', 'cat2', 'cat3'];
-    return categories;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: const Text('Test')),
-        body: ListView.builder(
-          itemCount: 3,
-          itemBuilder: (BuildContext context, int index) {
-            return Container(
-              child: Text(__generate_cat_names()[index]),
-              color: Color.fromARGB(136, 89, 89, 204),
-              alignment: Alignment.center,
-            );
-          },
-        ));
-  }
-}
-*/
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -295,30 +242,3 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(home: HomePage());
   }
 }
-
-
-/*
-Scaffold(
-            appBar: AppBar(
-              title: const Text('Jokes about Chuck Norris'),
-            ),
-            body: Padding(
-                padding: EdgeInsets.all(20.0),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    mainAxisSize: MainAxisSize.max,
-                    children: const [
-                      //Image(
-                      //  image: Image.file('./random-grid.jpg'),
-                      //),
-                      Text("s"),
-                      Text("Here is short joke")
-                    ])),
-            floatingActionButton: FloatingActionButton.extended(
-              label: const Text('Categories'),
-              icon: Icon(Icons.abc_outlined),
-              onPressed: () {},
-              focusColor: Color.fromARGB(184, 95, 97, 192),
-              backgroundColor: Color.fromARGB(184, 60, 61, 144),
-            )));
- */
