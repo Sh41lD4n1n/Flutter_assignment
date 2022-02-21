@@ -60,6 +60,14 @@ class JokeProvider {
     CATEGORIES = jsonDecode(resp.body);
   }
 
+  void setCurrentCategory(String cat) {
+    current_category = cat;
+  }
+
+  String getCurrentCategory() {
+    return "";
+  }
+
   Future<String> getJoke() async {
     var resp =
         await http.get(Uri.parse('https://api.chucknorris.io/jokes/random'));
@@ -105,10 +113,14 @@ class _HomePageState extends State<HomePage> {
               child: TextButton(
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.all(16.0),
-                  primary: Colors.white,
+                  primary: Color.fromARGB(255, 255, 255, 255),
                   textStyle: const TextStyle(fontSize: 20),
                 ),
-                onPressed: changeState,
+                onPressed: () {
+                  jokeProvider
+                      .setCurrentCategory(jokeProvider.CATEGORIES[index]);
+                  changeState();
+                },
                 child: Text(jokeProvider.CATEGORIES[index]),
               ),
               color: const Color.fromARGB(136, 89, 89, 204),
@@ -119,6 +131,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget getJokePage(BuildContext context) {
+    final String cat = jokeProvider.current_category;
     return Scaffold(
         body: Padding(
             padding: EdgeInsets.all(20.0),
@@ -126,10 +139,8 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  //Image(
-                  //  image: Image.file('./random-grid.jpg'),
-                  //),
-                  const Text("s"),
+                  Image.asset('image.jpg'),
+                  Text(cat),
                   FutureBuilder(
                       future: jokeProvider.getJoke(),
                       builder: (BuildContext context,
@@ -151,13 +162,49 @@ class _HomePageState extends State<HomePage> {
                         }
                       }),
                 ])),
-        floatingActionButton: FloatingActionButton.extended(
-          label: const Text('Categories'),
-          icon: const Icon(Icons.abc_outlined),
-          onPressed: changeState,
-          focusColor: const Color.fromARGB(184, 95, 97, 192),
-          backgroundColor: const Color.fromARGB(184, 60, 61, 144),
+        floatingActionButton: Align(
+          alignment: Alignment.bottomRight,
+          child: Column(
+            children: <Widget>[
+              FloatingActionButton.extended(
+                label: const Text('Categories'),
+                icon: const Icon(Icons.abc_outlined),
+                onPressed: changeState,
+                focusColor: const Color.fromARGB(184, 95, 97, 192),
+                backgroundColor: const Color.fromARGB(184, 60, 61, 144),
+              ),
+              FloatingActionButton.extended(
+                label: const Text('About'),
+                icon: const Icon(Icons.account_circle_sharp),
+                onPressed: () {
+                  setState(() {
+                    state = 2;
+                  });
+                },
+                focusColor: const Color.fromARGB(184, 95, 97, 192),
+                backgroundColor: const Color.fromARGB(184, 60, 61, 144),
+              )
+            ],
+          ),
         ));
+  }
+
+  Widget getAbout() {
+    return Column(children: [
+      const Padding(
+        child: Text(
+            "This application was done by student Danil Shalagin. This app take jokes about Chack Noris"),
+        padding: EdgeInsets.all(16.0),
+      ),
+      Center(
+          child: ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  state = 0;
+                });
+              },
+              child: const Text('Get some jokes')))
+    ]);
   }
 
   void changeState() {
@@ -172,6 +219,8 @@ class _HomePageState extends State<HomePage> {
         return getJokePage(context);
       case 1:
         return getCategoryPage();
+      case 2:
+        return getAbout();
     }
     throw Exception('Page doesnt exist');
   }
