@@ -57,17 +57,14 @@ class JokeProvider {
     var resp = await http
         .get(Uri.parse('https://api.chucknorris.io/jokes/categories'));
 
-    var resp1 =
-        await http.get(Uri.parse('https://api.chucknorris.io/jokes/random'));
-
     CATEGORIES = jsonDecode(resp.body);
   }
 
-  Future<Widget> getJoke() async {
+  Future<String> getJoke() async {
     var resp =
         await http.get(Uri.parse('https://api.chucknorris.io/jokes/random'));
 
-    return Text(jsonDecode(resp.body)["value"]);
+    return jsonDecode(resp.body)["value"];
   }
 }
 
@@ -95,19 +92,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> __generateCatNames() {
-    const categories = <String>['cat1', 'cat2', 'cat3'];
-    return categories;
-  }
-
   int state = 0;
-  JokeProvider jokeProvider = JokeProvider();
+  final JokeProvider jokeProvider = JokeProvider();
 
   Widget getCategoryPage() {
     return Scaffold(
         appBar: AppBar(title: const Text('Test')),
         body: ListView.builder(
-          itemCount: 3,
+          itemCount: jokeProvider.CATEGORIES.length,
           itemBuilder: (BuildContext context, int index) {
             return Container(
               child: TextButton(
@@ -117,7 +109,7 @@ class _HomePageState extends State<HomePage> {
                   textStyle: const TextStyle(fontSize: 20),
                 ),
                 onPressed: changeState,
-                child: Text(__generateCatNames()[index]),
+                child: Text(jokeProvider.CATEGORIES[index]),
               ),
               color: const Color.fromARGB(136, 89, 89, 204),
               alignment: Alignment.center,
@@ -133,24 +125,31 @@ class _HomePageState extends State<HomePage> {
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.max,
-                children: const [
+                children: [
                   //Image(
                   //  image: Image.file('./random-grid.jpg'),
                   //),
-                  Text("s"),
-                  /*FutureBuilder(
-                    initialData: "Waiting",
-                    future: await jokeProvider.getJoke(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                    }
-                    final data = snapshot.data ?? "...";
-                    return Icon(data ? Icons.add : Icons.error_outline);
-                    },
-                    
-                  )*/
-                  Text("joke")
+                  const Text("s"),
+                  FutureBuilder(
+                      future: jokeProvider.getJoke(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
+                        if (snapshot.hasData) {
+                          return SafeArea(
+                            child: Text(snapshot.data!),
+                            left: true,
+                            right: true,
+                            bottom: true,
+                            minimum: EdgeInsets.all(10.0),
+                          );
+                        } else {
+                          return const SizedBox(
+                            width: 60,
+                            height: 60,
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      }),
                 ])),
         floatingActionButton: FloatingActionButton.extended(
           label: const Text('Categories'),
