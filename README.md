@@ -4,6 +4,8 @@ This application is writtent on flutter. This app show text with 2 rows and if b
 Buttom about show information about author
 Refresh button show new joke.
 # Demo
-![alt text](./Demo1.png)
-![alt text](./Demo2.png)
-![alt text](./Demo3.png)
+![alt text](./Demo.png)
+
+[demo1](./Demo2.png)
+[demo2](./Demo2.png)
+[demo3](./Demo3.png)
